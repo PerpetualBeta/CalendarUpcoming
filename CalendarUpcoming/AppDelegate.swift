@@ -12,6 +12,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var clickOutsideMonitor: Any?
     private var cancellables = Set<AnyCancellable>()
     private var isPulsing = false
+    let updateChecker = JorvikUpdateChecker(repoName: "CalendarUpcoming")
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -25,6 +26,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         button.wantsLayer = true
 
         setIdleIcon()
+        JorvikMenuBarPill.apply(to: button)
+        updateChecker.checkOnSchedule()
 
         monitor.$urgency
             .receive(on: DispatchQueue.main)
@@ -32,6 +35,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self?.updateState(urgency: urgency)
             }
             .store(in: &cancellables)
+
+        DistributedNotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appearanceChanged),
+            name: NSNotification.Name("AppleInterfaceThemeChangedNotification"),
+            object: nil
+        )
+    }
+
+    @objc private func appearanceChanged() {
+        if let button = statusItem.button {
+            JorvikMenuBarPill.refresh(on: button)
+        }
     }
 
     // MARK: - State update
@@ -86,7 +102,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Pulse / glow animation
 
     private func startPulse(color: NSColor) {
-        // If already pulsing with a different colour, stop first so the new colour applies.
         if isPulsing { stopPulse() }
         guard let layer = statusItem.button?.layer else { return }
         isPulsing = true
@@ -169,28 +184,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Context menu (right-click)
 
     private func showContextMenu() {
-        let menu = NSMenu()
-
-        let aboutItem = NSMenuItem(title: "About CalendarUpcoming",
-                                   action: #selector(openAbout),
-                                   keyEquivalent: "")
-        aboutItem.target = self
-        menu.addItem(aboutItem)
-
-        menu.addItem(.separator())
-
-        let settingsItem = NSMenuItem(title: "Settings…",
-                                      action: #selector(openSettings),
-                                      keyEquivalent: ",")
-        settingsItem.target = self
-        menu.addItem(settingsItem)
-
-        menu.addItem(.separator())
-
-        menu.addItem(NSMenuItem(title: "Quit CalendarUpcoming",
-                                action: #selector(NSApp.terminate(_:)),
-                                keyEquivalent: "q"))
-
+        let menu = JorvikMenuBuilder.buildMenu(
+            appName: "CalendarUpcoming",
+            aboutAction: #selector(openAbout),
+            settingsAction: #selector(openSettings),
+            target: self
+        )
         statusItem.menu = menu
         statusItem.button?.performClick(nil)
         statusItem.menu = nil
@@ -198,43 +197,57 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openAbout() {
         closePopover()
-        guard let button = statusItem.button else { return }
-        let p = NSPopover()
-        p.behavior = .applicationDefined
-        p.animates = true
-        let hc = NSHostingController(
-            rootView: AboutView(onDismiss: { [weak self] in self?.closePopover() })
+        JorvikAboutView.showWindow(
+            appName: "CalendarUpcoming",
+            repoName: "CalendarUpcoming",
+            productPage: "utilities/calendarupcoming"
         )
-        hc.view.wantsLayer = true
-        hc.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
-        p.contentViewController = hc
-        p.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-        popover = p
-
-        clickOutsideMonitor = NSEvent.addGlobalMonitorForEvents(
-            matching: [.leftMouseDown, .rightMouseDown]
-        ) { [weak self] _ in
-            self?.closePopover()
-        }
     }
 
     @objc private func openSettings() {
         closePopover()
-        guard let button = statusItem.button else { return }
-        let p = NSPopover()
-        p.behavior = .applicationDefined
-        p.animates = true
-        let hc = NSHostingController(rootView: SettingsView(monitor: monitor))
-        hc.view.wantsLayer = true
-        hc.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
-        p.contentViewController = hc
-        p.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-        popover = p
+        JorvikSettingsView.showWindow(
+            appName: "CalendarUpcoming",
+            updateChecker: updateChecker
+        ) { [weak self] in
+            if let monitor = self?.monitor {
+                Section("Alerts") {
+                    Picker("Alert when events start within", selection: Binding(
+                        get: { monitor.lookAheadMinutes },
+                        set: { monitor.lookAheadMinutes = $0 }
+                    )) {
+                        Text("5 minutes").tag(5)
+                        Text("10 minutes").tag(10)
+                        Text("15 minutes").tag(15)
+                        Text("30 minutes").tag(30)
+                        Text("1 hour").tag(60)
+                    }
+                }
 
-        clickOutsideMonitor = NSEvent.addGlobalMonitorForEvents(
-            matching: [.leftMouseDown, .rightMouseDown]
-        ) { [weak self] _ in
-            self?.closePopover()
+                Section("Permissions") {
+                    HStack {
+                        Text("Calendar Access")
+                        Spacer()
+                        let status = EKEventStore.authorizationStatus(for: .event)
+                        if status == .fullAccess || status == .authorized {
+                            Label("Granted", systemImage: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                                .font(.caption)
+                        } else {
+                            Button("Grant Access") {
+                                EKEventStore().requestFullAccessToEvents { _, _ in }
+                            }
+                            .font(.caption)
+                        }
+                    }
+                }
+            }
+
+            MenuBarPillSettings {
+                if let button = self?.statusItem.button {
+                    JorvikMenuBarPill.apply(to: button)
+                }
+            }
         }
     }
 }

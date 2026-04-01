@@ -16,6 +16,13 @@
 		CB000056 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB000038 /* EventKit.framework */; };
 		CB000057 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000039 /* ContentView.swift */; };
 		CB000058 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000040 /* AboutView.swift */; };
+		CB000060 /* JorvikAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000070 /* JorvikAboutView.swift */; };
+		CB000061 /* JorvikSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000071 /* JorvikSettingsView.swift */; };
+		CB000062 /* JorvikUpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000072 /* JorvikUpdateChecker.swift */; };
+		CB000063 /* JorvikMenuBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000073 /* JorvikMenuBuilder.swift */; };
+		CB000064 /* JorvikMenuBarPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000074 /* JorvikMenuBarPill.swift */; };
+		CB000065 /* JorvikWindowHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000075 /* JorvikWindowHelper.swift */; };
+		CB000066 /* JorvikShortcutRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000076 /* JorvikShortcutRecorder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +38,13 @@
 		CB000039 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CB000040 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		CB000041 /* CalendarUpcoming.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CalendarUpcoming.entitlements; sourceTree = "<group>"; };
+		CB000070 /* JorvikAboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikAboutView.swift; sourceTree = "<group>"; };
+		CB000071 /* JorvikSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikSettingsView.swift; sourceTree = "<group>"; };
+		CB000072 /* JorvikUpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikUpdateChecker.swift; sourceTree = "<group>"; };
+		CB000073 /* JorvikMenuBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikMenuBuilder.swift; sourceTree = "<group>"; };
+		CB000074 /* JorvikMenuBarPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikMenuBarPill.swift; sourceTree = "<group>"; };
+		CB000075 /* JorvikWindowHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikWindowHelper.swift; sourceTree = "<group>"; };
+		CB000076 /* JorvikShortcutRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikShortcutRecorder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,8 +81,23 @@
 				CB000041 /* CalendarUpcoming.entitlements */,
 				CB000035 /* Info.plist */,
 				CB000036 /* Assets.xcassets */,
+				CB000080 /* JorvikKit */,
 			);
 			path = CalendarUpcoming;
+			sourceTree = "<group>";
+		};
+		CB000080 /* JorvikKit */ = {
+			isa = PBXGroup;
+			children = (
+				CB000070 /* JorvikAboutView.swift */,
+				CB000071 /* JorvikSettingsView.swift */,
+				CB000072 /* JorvikUpdateChecker.swift */,
+				CB000073 /* JorvikMenuBuilder.swift */,
+				CB000074 /* JorvikMenuBarPill.swift */,
+				CB000075 /* JorvikWindowHelper.swift */,
+				CB000076 /* JorvikShortcutRecorder.swift */,
+			);
+			path = JorvikKit;
 			sourceTree = "<group>";
 		};
 		CB000022 /* Products */ = {
@@ -163,6 +192,13 @@
 				CB000054 /* SettingsView.swift in Sources */,
 				CB000057 /* ContentView.swift in Sources */,
 				CB000058 /* AboutView.swift in Sources */,
+				CB000060 /* JorvikAboutView.swift in Sources */,
+				CB000061 /* JorvikSettingsView.swift in Sources */,
+				CB000062 /* JorvikUpdateChecker.swift in Sources */,
+				CB000063 /* JorvikMenuBuilder.swift in Sources */,
+				CB000064 /* JorvikMenuBarPill.swift in Sources */,
+				CB000065 /* JorvikWindowHelper.swift in Sources */,
+				CB000066 /* JorvikShortcutRecorder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,7 +255,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -273,7 +309,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
