@@ -3,6 +3,10 @@ import EventKit
 
 struct EventsPopoverView: View {
     @ObservedObject var monitor: EventMonitor
+    /// Optional dismissal hook, retained for any future in-popover close button.
+    /// Escape-key dismissal is handled at the AppKit layer in AppDelegate via
+    /// a local keyDown event monitor — see conventions-accessory-popover-focus
+    /// for why SwiftUI's `.onExitCommand` isn't a reliable fit here.
     var onDismiss: (() -> Void)? = nil
 
     var body: some View {
@@ -29,7 +33,6 @@ struct EventsPopoverView: View {
         }
         .frame(width: 320)
         .background(Color(.windowBackgroundColor))
-        .onExitCommand { onDismiss?() }
     }
 
     private var eventList: some View {

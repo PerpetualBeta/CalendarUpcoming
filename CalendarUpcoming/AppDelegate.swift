@@ -4,12 +4,49 @@ import Combine
 import QuartzCore
 import EventKit
 
+// MARK: - Escape-aware hosting controller
+//
+// NSHostingController subclass that makes itself first responder when its view
+// appears, then catches Escape via both `keyDown(with:)` and `cancelOperation(_:)`.
+// Belt-and-suspenders: `keyDown` catches key events at the lowest level before
+// SwiftUI's NSHostingView internals have a chance to intercept; `cancelOperation`
+// is AppKit's canonical Escape/Cmd-. handler via the responder chain.
+//
+// Combined with `.transient` popover behaviour and `NSApp.activate()` on show,
+// this gives reliable Escape dismissal for popovers hosted in an accessory-
+// policy menu-bar app.
+final class EscapeHostingController<Content: View>: NSHostingController<Content> {
+    var onCancel: (() -> Void)?
+
+    override var acceptsFirstResponder: Bool { true }
+
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        // Defer a tick so the popover's window hierarchy is fully realised.
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.view.window?.makeFirstResponder(self)
+        }
+    }
+
+    override func keyDown(with event: NSEvent) {
+        if event.keyCode == 53 {   // Escape
+            onCancel?()
+            return
+        }
+        super.keyDown(with: event)
+    }
+
+    override func cancelOperation(_ sender: Any?) {
+        onCancel?()
+    }
+}
+
 final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var statusItem: NSStatusItem!
     let monitor = EventMonitor()
     private var popover: NSPopover?
-    private var clickOutsideMonitor: Any?
     private var cancellables = Set<AnyCancellable>()
     private var isPulsing = false
     let updateChecker = JorvikUpdateChecker(repoName: "CalendarUpcoming")
@@ -154,31 +191,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let p = NSPopover()
-        p.behavior = .applicationDefined
+        // `.transient` gives outside-click dismissal for free. Escape dismissal
+        // is handled by `EscapeHostingController` via `cancelOperation(_:)` —
+        // see comment on that class for why we don't rely on app-level
+        // activation + .transient's native Escape handling.
+        p.behavior = .transient
         p.animates = true
-        let hc = NSHostingController(
+        let hc = EscapeHostingController(
             rootView: EventsPopoverView(monitor: monitor, onDismiss: { [weak self] in self?.closePopover() })
         )
+        hc.onCancel = { [weak self] in self?.closePopover() }
         hc.view.wantsLayer = true
         hc.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
         p.contentViewController = hc
-        p.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-        popover = p
 
-        clickOutsideMonitor = NSEvent.addGlobalMonitorForEvents(
-            matching: [.leftMouseDown, .rightMouseDown]
-        ) { [weak self] _ in
-            self?.closePopover()
+        // Best-effort activation. On macOS 14+ use the cooperative form;
+        // on older macOS fall back to the legacy (then-non-deprecated) API.
+        if #available(macOS 14.0, *) {
+            NSApp.activate()
+        } else {
+            NSApp.activate(ignoringOtherApps: true)
         }
+        p.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        p.contentViewController?.view.window?.makeKey()
+
+        popover = p
     }
 
     private func closePopover() {
         popover?.performClose(nil)
         popover = nil
-        if let m = clickOutsideMonitor {
-            NSEvent.removeMonitor(m)
-            clickOutsideMonitor = nil
-        }
     }
 
     // MARK: - Context menu (right-click)
@@ -229,7 +271,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                         Text("Calendar Access")
                         Spacer()
                         let status = EKEventStore.authorizationStatus(for: .event)
-                        if status == .fullAccess || status == .authorized {
+                        // Granted on macOS 14+ means `.fullAccess`; on macOS 13
+                        // means `.authorized` (deprecated in the 14 SDK — we
+                        // compare by rawValue to avoid the deprecation warning).
+                        // IIFE so the #available branching reads as a single
+                        // `let` binding to SwiftUI's ViewBuilder.
+                        let granted: Bool = {
+                            if #available(macOS 14.0, *) {
+                                return status == .fullAccess
+                            }
+                            return status.rawValue == 3   // .authorized
+                        }()
+                        if granted {
                             Label("Granted", systemImage: "checkmark.circle.fill")
                                 .foregroundStyle(.green)
                                 .font(.caption)

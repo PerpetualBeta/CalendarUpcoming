@@ -104,12 +104,16 @@ final class EventMonitor: ObservableObject {
             @unknown default:    return "unknown(\(status.rawValue))"
             }
         }
-        switch status {
-        case .authorized:    return "authorized"
-        case .denied:        return "denied"
-        case .restricted:    return "restricted"
-        case .notDetermined: return "notDetermined"
-        @unknown default:    return "unknown(\(status.rawValue))"
+        // macOS 13 branch: the SDK compiles against macOS 14 so `.fullAccess`
+        // and `.writeOnly` are known enum cases and `@unknown default` won't
+        // cover them. Switch on rawValue instead — avoids both the deprecation
+        // warning on `.authorized` and the compile-time exhaustiveness warning.
+        switch status.rawValue {
+        case 0: return "notDetermined"
+        case 1: return "restricted"
+        case 2: return "denied"
+        case 3: return "authorized"
+        default: return "unknown(\(status.rawValue))"
         }
     }
 
