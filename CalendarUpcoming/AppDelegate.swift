@@ -54,6 +54,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
 
+        UserDefaults.standard.register(defaults: ["menuBarPillEnabled": true])
+
+        if !UserDefaults.standard.bool(forKey: "didMigratePillColorV2") {
+            UserDefaults.standard.removeObject(forKey: "menuBarPillColor")
+            UserDefaults.standard.set(true, forKey: "didMigratePillColorV2")
+        }
+
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         guard let button = statusItem.button else { return }
@@ -63,7 +70,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         button.wantsLayer = true
 
         setIdleIcon()
-        JorvikMenuBarPill.apply(to: button)
         updateChecker.checkOnSchedule()
 
         monitor.$urgency
@@ -82,9 +88,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func appearanceChanged() {
-        if let button = statusItem.button {
-            JorvikMenuBarPill.refresh(on: button)
-        }
+        updateState(urgency: monitor.urgency)
     }
 
     // MARK: - State update
@@ -110,13 +114,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func setIdleIcon() {
         guard let button = statusItem.button else { return }
-        if let img = NSImage(systemSymbolName: "calendar", accessibilityDescription: "Calendar") {
-            let sized = img.withSymbolConfiguration(
-                NSImage.SymbolConfiguration(pointSize: 15, weight: .regular)
-            ) ?? img
-            sized.isTemplate = true
-            button.image = sized
-        }
+        button.image = JorvikMenuBarPill.icon(
+            symbolName: "calendar",
+            accessibilityDescription: "Calendar"
+        )
         button.contentTintColor = nil
     }
 
@@ -125,15 +126,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let name = NSImage(systemSymbolName: "calendar.badge.exclamationmark",
                            accessibilityDescription: nil) != nil
             ? "calendar.badge.exclamationmark" : "calendar"
-        if let img = NSImage(systemSymbolName: name,
-                             accessibilityDescription: "Upcoming events") {
-            let config = NSImage.SymbolConfiguration(pointSize: 15, weight: .regular)
-                .applying(NSImage.SymbolConfiguration(paletteColors: [color, color]))
-            let sized = img.withSymbolConfiguration(config) ?? img
-            sized.isTemplate = false
-            button.image = sized
-        }
-        button.contentTintColor = color
+        button.image = JorvikMenuBarPill.icon(
+            symbolName: name,
+            tint: color,
+            accessibilityDescription: "Upcoming events"
+        )
+        // When the pill is on, the image bakes in its own palette; template
+        // tinting via contentTintColor would fight the composed draw.
+        button.contentTintColor = JorvikMenuBarPill.isEnabled ? nil : color
     }
 
     // MARK: - Pulse / glow animation
@@ -297,9 +297,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
 
             MenuBarPillSettings {
-                if let button = self?.statusItem.button {
-                    JorvikMenuBarPill.apply(to: button)
-                }
+                guard let self else { return }
+                self.updateState(urgency: self.monitor.urgency)
             }
         }
     }
