@@ -54,8 +54,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
 
-        UserDefaults.standard.register(defaults: ["menuBarPillEnabled": true])
-
         if !UserDefaults.standard.bool(forKey: "didMigratePillColorV2") {
             UserDefaults.standard.removeObject(forKey: "menuBarPillColor")
             UserDefaults.standard.set(true, forKey: "didMigratePillColorV2")
