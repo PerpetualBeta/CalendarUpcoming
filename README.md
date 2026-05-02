@@ -7,7 +7,7 @@ A macOS menu-bar app that monitors your calendars for upcoming events and alerts
 - Sits silently in the menu bar as a plain calendar icon
 - When an event is starting within your configured look-ahead window, the icon switches to blue and slowly pulses with a glow
 - **Left-click** — opens a popover listing all upcoming events: time until start, clock time, and calendar name with colour bar
-- **Right-click** → **Settings** to change the look-ahead period, or **Quit**
+- **Right-click** → **Settings…** to change the look-ahead period, toggle the optional grey **menu-bar-icon pill** (off by default), enable Launch at Login, and configure auto-update; or **Quit**
 - **ESC or click outside** — closes the popover
 
 Monitors all calendars registered with macOS, including Apple Calendar, Outlook/Exchange (via System Settings → Internet Accounts), Google, and iCloud.
