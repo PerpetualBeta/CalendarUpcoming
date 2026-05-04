@@ -23,6 +23,8 @@
 		CB000064 /* JorvikMenuBarPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000074 /* JorvikMenuBarPill.swift */; };
 		CB000065 /* JorvikWindowHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000075 /* JorvikWindowHelper.swift */; };
 		CB000066 /* JorvikShortcutRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000076 /* JorvikShortcutRecorder.swift */; };
+		CB000601 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB000600; };
+		CB000602 /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CB000600; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,7 +47,22 @@
 		CB000074 /* JorvikMenuBarPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikMenuBarPill.swift; sourceTree = "<group>"; };
 		CB000075 /* JorvikWindowHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikWindowHelper.swift; sourceTree = "<group>"; };
 		CB000076 /* JorvikShortcutRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikShortcutRecorder.swift; sourceTree = "<group>"; };
+		CB000600 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CB000603 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CB000602 /* Sparkle.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		CB000015 /* Frameworks */ = {
@@ -53,6 +70,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB000056 /* EventKit.framework in Frameworks */,
+				CB000601 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				CB000038 /* EventKit.framework */,
+				CB000600 /* Sparkle.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -126,6 +145,7 @@
 				CB000014 /* Sources */,
 				CB000015 /* Frameworks */,
 				CB000016 /* Resources */,
+				CB000603 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -327,6 +347,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = CalendarUpcoming/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -352,6 +376,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = CalendarUpcoming/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

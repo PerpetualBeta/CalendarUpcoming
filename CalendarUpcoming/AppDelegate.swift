@@ -3,6 +3,7 @@ import SwiftUI
 import Combine
 import QuartzCore
 import EventKit
+import Sparkle
 
 // MARK: - Escape-aware hosting controller
 //
@@ -50,6 +51,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var cancellables = Set<AnyCancellable>()
     private var isPulsing = false
     let updateChecker = JorvikUpdateChecker(repoName: "CalendarUpcoming")
+    let sparkleUserDriverDelegate = CalendarUpcomingUserDriverDelegate()
+    lazy var sparkleUpdater = SPUStandardUpdaterController(
+        startingUpdater: true,
+        updaterDelegate: nil,
+        userDriverDelegate: sparkleUserDriverDelegate
+    )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -68,7 +75,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         button.wantsLayer = true
 
         setIdleIcon()
-        updateChecker.checkOnSchedule()
+        // Sparkle handles update polling now. JorvikUpdateChecker instance
+        // remains because JorvikSettingsView.showWindow still requires one
+        // as a parameter, pending JorvikKit retirement (§11.5).
+        _ = sparkleUpdater  // forces lazy init so Sparkle starts at launch
+        // updateChecker.checkOnSchedule()  // disabled — Sparkle owns this now
 
         monitor.$urgency
             .receive(on: DispatchQueue.main)
@@ -224,15 +235,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Context menu (right-click)
 
     private func showContextMenu() {
+        let actions: [JorvikMenuBuilder.ActionItem] = [
+            .init(
+                title: "Check for Updates\u{2026}",
+                action: #selector(checkForUpdates(_:)),
+                target: self
+            )
+        ]
         let menu = JorvikMenuBuilder.buildMenu(
             appName: "CalendarUpcoming",
             aboutAction: #selector(openAbout),
             settingsAction: #selector(openSettings),
-            target: self
+            target: self,
+            actions: actions
         )
         statusItem.menu = menu
         statusItem.button?.performClick(nil)
         statusItem.menu = nil
+    }
+
+    @objc func checkForUpdates(_ sender: Any?) {
+        sparkleUpdater.checkForUpdates(sender)
     }
 
     @objc private func openAbout() {
@@ -299,5 +322,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self.updateState(urgency: self.monitor.urgency)
             }
         }
+    }
+}
+
+/// LSUIElement apps don't auto-activate when they present windows, so
+/// Sparkle's update dialogs would appear behind whatever app is currently
+/// key. This brings CalendarUpcoming frontmost just before each modal.
+final class CalendarUpcomingUserDriverDelegate: NSObject, SPUStandardUserDriverDelegate {
+    func standardUserDriverWillShowModalAlert() {
+        NSApp.activate(ignoringOtherApps: true)
     }
 }

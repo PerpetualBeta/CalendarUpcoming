@@ -30,5 +30,13 @@
 	<string>CalendarUpcoming needs access to your calendars to show upcoming event alerts in the menu bar.</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>CalendarUpcoming needs full calendar access to monitor upcoming events in real time.</string>
+	<key>SUFeedURL</key>
+	<string>https://jorviksoftware.cc/appcasts/calendarupcoming.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>zVc7rs8EiLmlDAYpgaIItjnHtsCkvyVVub+I0/sSb3Q=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
 </dict>
 </plist>
