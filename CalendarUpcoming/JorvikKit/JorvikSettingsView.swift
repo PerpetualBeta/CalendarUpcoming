@@ -3,7 +3,6 @@ import ServiceManagement
 
 struct JorvikSettingsView<AppSettings: View>: View {
     let appName: String
-    @Bindable var updateChecker: JorvikUpdateChecker
     @ViewBuilder let appSettings: () -> AppSettings
 
     @State private var launchAtLogin: Bool = SMAppService.mainApp.status == .enabled
@@ -34,11 +33,6 @@ struct JorvikSettingsView<AppSettings: View>: View {
                         }
                 }
 
-                // Legacy Updates section removed during the Sparkle 2.x
-                // migration — Sparkle owns checking, downloading, and
-                // installation, with its own user-facing prompt UI. Manual
-                // triggering lives on the right-click menu's "Check for
-                // Updates…" entry.
             }
             .formStyle(.grouped)
 
@@ -55,7 +49,7 @@ struct JorvikSettingsView<AppSettings: View>: View {
         .frame(width: 420, height: 400)
     }
 
-    static func showWindow(appName: String, updateChecker: JorvikUpdateChecker, @ViewBuilder appSettings: @escaping () -> AppSettings) {
+    static func showWindow(appName: String, @ViewBuilder appSettings: @escaping () -> AppSettings) {
         if let window = JorvikSettingsWindowCache.existingWindow {
             // If the cached window is hidden, bring it to the active space so
             // the user isn't yanked to wherever it was last shown. If it's
@@ -77,7 +71,6 @@ struct JorvikSettingsView<AppSettings: View>: View {
 
         let view = JorvikSettingsView(
             appName: appName,
-            updateChecker: updateChecker,
             appSettings: appSettings
         )
         let controller = NSHostingController(rootView: view)

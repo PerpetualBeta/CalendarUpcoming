@@ -50,7 +50,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var popover: NSPopover?
     private var cancellables = Set<AnyCancellable>()
     private var isPulsing = false
-    let updateChecker = JorvikUpdateChecker(repoName: "CalendarUpcoming")
     let sparkleUserDriverDelegate = CalendarUpcomingUserDriverDelegate()
     lazy var sparkleUpdater = SPUStandardUpdaterController(
         startingUpdater: true,
@@ -75,11 +74,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         button.wantsLayer = true
 
         setIdleIcon()
-        // Sparkle handles update polling now. JorvikUpdateChecker instance
-        // remains because JorvikSettingsView.showWindow still requires one
-        // as a parameter, pending JorvikKit retirement (§11.5).
         _ = sparkleUpdater  // forces lazy init so Sparkle starts at launch
-        // updateChecker.checkOnSchedule()  // disabled — Sparkle owns this now
 
         monitor.$urgency
             .receive(on: DispatchQueue.main)
@@ -270,10 +265,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openSettings() {
         closePopover()
-        JorvikSettingsView.showWindow(
-            appName: "CalendarUpcoming",
-            updateChecker: updateChecker
-        ) { [weak self] in
+        JorvikSettingsView.showWindow(appName: "CalendarUpcoming") { [weak self] in
             if let monitor = self?.monitor {
                 Section("Alerts") {
                     Picker("Alert when events start within", selection: Binding(
