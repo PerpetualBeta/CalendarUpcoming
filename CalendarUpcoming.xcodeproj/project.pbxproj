@@ -18,7 +18,6 @@
 		CB000058 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000040 /* AboutView.swift */; };
 		CB000060 /* JorvikAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000070 /* JorvikAboutView.swift */; };
 		CB000061 /* JorvikSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000071 /* JorvikSettingsView.swift */; };
-		CB000062 /* JorvikUpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000072 /* JorvikUpdateChecker.swift */; };
 		CB000063 /* JorvikMenuBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000073 /* JorvikMenuBuilder.swift */; };
 		CB000064 /* JorvikMenuBarPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000074 /* JorvikMenuBarPill.swift */; };
 		CB000065 /* JorvikWindowHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000075 /* JorvikWindowHelper.swift */; };
@@ -42,7 +41,6 @@
 		CB000041 /* CalendarUpcoming.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CalendarUpcoming.entitlements; sourceTree = "<group>"; };
 		CB000070 /* JorvikAboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikAboutView.swift; sourceTree = "<group>"; };
 		CB000071 /* JorvikSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikSettingsView.swift; sourceTree = "<group>"; };
-		CB000072 /* JorvikUpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikUpdateChecker.swift; sourceTree = "<group>"; };
 		CB000073 /* JorvikMenuBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikMenuBuilder.swift; sourceTree = "<group>"; };
 		CB000074 /* JorvikMenuBarPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikMenuBarPill.swift; sourceTree = "<group>"; };
 		CB000075 /* JorvikWindowHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikWindowHelper.swift; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 			children = (
 				CB000070 /* JorvikAboutView.swift */,
 				CB000071 /* JorvikSettingsView.swift */,
-				CB000072 /* JorvikUpdateChecker.swift */,
 				CB000073 /* JorvikMenuBuilder.swift */,
 				CB000074 /* JorvikMenuBarPill.swift */,
 				CB000075 /* JorvikWindowHelper.swift */,
@@ -214,7 +211,6 @@
 				CB000058 /* AboutView.swift in Sources */,
 				CB000060 /* JorvikAboutView.swift in Sources */,
 				CB000061 /* JorvikSettingsView.swift in Sources */,
-				CB000062 /* JorvikUpdateChecker.swift in Sources */,
 				CB000063 /* JorvikMenuBuilder.swift in Sources */,
 				CB000064 /* JorvikMenuBarPill.swift in Sources */,
 				CB000065 /* JorvikWindowHelper.swift in Sources */,
