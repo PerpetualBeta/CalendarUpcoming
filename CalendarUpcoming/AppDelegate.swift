@@ -89,6 +89,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             name: NSNotification.Name("AppleInterfaceThemeChangedNotification"),
             object: nil
         )
+
+        // Redraw the status icon when the display configuration changes — the
+        // menu bar's effective thickness can shrink (e.g. moving from a notched
+        // display to an external one) and leave the pre-rendered pill cropped.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appearanceChanged),
+            name: NSApplication.didChangeScreenParametersNotification,
+            object: nil
+        )
     }
 
     @objc private func appearanceChanged() {
