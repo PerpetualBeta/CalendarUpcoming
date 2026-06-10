@@ -39,7 +39,7 @@ struct EventsPopoverView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(monitor.upcomingEvents, id: \.eventIdentifier) { event in
-                    EventRowView(event: event)
+                    EventRowView(event: event, onDismiss: { monitor.dismiss(event) })
                     Divider().padding(.leading, 16)
                 }
             }
@@ -112,6 +112,9 @@ struct EventsPopoverView: View {
 
 struct EventRowView: View {
     let event: EKEvent
+    var onDismiss: () -> Void
+
+    @State private var hovering = false
 
     private var minutesUntil: Int {
         max(0, Int(event.startDate.timeIntervalSinceNow / 60))
@@ -172,9 +175,19 @@ struct EventRowView: View {
             }
 
             Spacer()
+
+            Button(action: onDismiss) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 15))
+                    .foregroundStyle(hovering ? Color.secondary : Color.secondary.opacity(0.35))
+            }
+            .buttonStyle(.plain)
+            .help("Dismiss — hide this event until it ends")
+            .padding(.top, 1)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
         .contentShape(Rectangle())
+        .onHover { hovering = $0 }
     }
 }

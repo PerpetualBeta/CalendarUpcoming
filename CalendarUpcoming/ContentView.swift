@@ -36,7 +36,7 @@ struct ContentView: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(monitor.upcomingEvents, id: \.eventIdentifier) { event in
-                            EventRowView(event: event)
+                            EventRowView(event: event, onDismiss: { monitor.dismiss(event) })
                             Divider().padding(.leading, 56)
                         }
                     }

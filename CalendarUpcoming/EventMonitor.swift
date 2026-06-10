@@ -25,6 +25,17 @@ final class EventMonitor: ObservableObject {
     static let lookAheadKey = "lookAheadMinutes"
     static let lookAheadDefault = 15
 
+    static let dismissedKey = "dismissedEventKeys"
+
+    /// Events the user has manually dismissed, keyed by a per-occurrence
+    /// identifier mapped to the event's *end* date. EventKit's predicate
+    /// matches any event overlapping the look-ahead window, so a long meeting
+    /// stays "Now" for its whole scheduled duration even after you've left —
+    /// dismissing hides it (and clears the alert) until it ends. The end date
+    /// lets us prune the entry once the event is genuinely over, so the set
+    /// can't grow without bound.
+    private var dismissed: [String: Date] = [:]
+
     var lookAheadMinutes: Int {
         get {
             let v = UserDefaults.standard.integer(forKey: Self.lookAheadKey)
@@ -37,7 +48,35 @@ final class EventMonitor: ObservableObject {
     }
 
     init() {
+        loadDismissed()
         requestAccess()
+    }
+
+    // MARK: - Dismissal
+
+    /// Hide a single event occurrence from the list and the alert. Persists so
+    /// the dismissal survives a relaunch mid-meeting.
+    func dismiss(_ event: EKEvent) {
+        dismissed[dismissalKey(for: event)] = event.endDate
+        persistDismissed()
+        refresh()
+    }
+
+    /// Per-occurrence key. Recurring events share one `eventIdentifier` across
+    /// all occurrences, so the start date is folded in to dismiss only the one
+    /// instance the user is looking at.
+    private func dismissalKey(for event: EKEvent) -> String {
+        let id = event.eventIdentifier ?? event.calendarItemIdentifier
+        return "\(id)|\(event.startDate.timeIntervalSinceReferenceDate)"
+    }
+
+    private func loadDismissed() {
+        let raw = UserDefaults.standard.dictionary(forKey: Self.dismissedKey) as? [String: Double] ?? [:]
+        dismissed = raw.mapValues { Date(timeIntervalSinceReferenceDate: $0) }
+    }
+
+    private func persistDismissed() {
+        UserDefaults.standard.set(dismissed.mapValues { $0.timeIntervalSinceReferenceDate }, forKey: Self.dismissedKey)
     }
 
     deinit {
@@ -160,6 +199,11 @@ final class EventMonitor: ObservableObject {
         let now = Date()
         let end = now.addingTimeInterval(TimeInterval(lookAheadMinutes * 60))
 
+        // Forget dismissals whose event has ended — keeps the set bounded.
+        let prunedCount = dismissed.count
+        dismissed = dismissed.filter { $0.value > now }
+        if dismissed.count != prunedCount { persistDismissed() }
+
         let predicate = store.predicateForEvents(withStart: now, end: end, calendars: nil)
         let raw = store.events(matching: predicate)
 
@@ -175,11 +219,12 @@ final class EventMonitor: ObservableObject {
                 let selfAttendee = attendees.first { $0.isCurrentUser }
                 if selfAttendee?.participantStatus == .declined { return false }
             }
+            if dismissed[dismissalKey(for: event)] != nil { return false }
             return true
         }
         .sorted { $0.startDate < $1.startDate }
 
-        debugInfo = "cals=\(calCount) raw=\(raw.count) allDay=\(allDayCount) declined=\(declinedCount) shown=\(filtered.count)"
+        debugInfo = "cals=\(calCount) raw=\(raw.count) allDay=\(allDayCount) declined=\(declinedCount) dismissed=\(dismissed.count) shown=\(filtered.count)"
 
         upcomingEvents = filtered
 
