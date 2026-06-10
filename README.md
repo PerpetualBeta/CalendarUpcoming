@@ -7,6 +7,7 @@ A macOS menu-bar app that monitors your calendars for upcoming events and alerts
 - Sits silently in the menu bar as a plain calendar icon
 - When an event is starting within your configured look-ahead window, the icon switches to blue and slowly pulses with a glow
 - **Left-click** — opens a popover listing all upcoming events: time until start, clock time, and calendar name with colour bar
+- **Dismiss an event** — each row has a **✕** button that hides that event from the list and clears the alert. macOS keeps a long meeting "in progress" until its scheduled end time, so if you leave an hour-long meeting after ten minutes the icon would keep pulsing red; dismissing removes it early. Dismissals are per-occurrence (a recurring meeting's other days are untouched), persist across relaunch, and are forgotten automatically once the event ends.
 - **Right-click** → **Settings…** to change the look-ahead period, toggle the optional grey **menu-bar-icon pill** (off by default), or enable Launch at Login. The right-click menu also has **Check for Updates…** (Sparkle-driven) and **Quit**.
 - **ESC or click outside** — closes the popover
 
@@ -47,7 +48,7 @@ On first launch, macOS will ask for calendar permission. Grant **Full Access**. 
 |---|---|
 | `CalendarUpcomingApp.swift` | `@main` entry; wires `AppDelegate` via `@NSApplicationDelegateAdaptor` |
 | `AppDelegate.swift` | Owns the `NSStatusItem`, manages the pulse animation and popover lifecycle |
-| `EventMonitor.swift` | `ObservableObject` wrapping `EKEventStore`; polls every 30s and on `EKEventStoreChanged` |
+| `EventMonitor.swift` | `ObservableObject` wrapping `EKEventStore`; refreshes once a minute (aligned to the minute boundary) and on `EKEventStoreChanged`; owns dismissal state |
 | `EventsPopoverView.swift` | SwiftUI popover content — event list, empty state, access-denied states |
 | `SettingsView.swift` | Look-ahead picker (5 / 10 / 15 / 30 / 60 min), persisted to `UserDefaults` |
 
@@ -57,7 +58,8 @@ On first launch, macOS will ask for calendar permission. Grant **Full Access**. 
 - On macOS 14+: calls `requestFullAccessToEvents`; on macOS 13: calls `requestAccess(to: .event)`
 - Checks `EKEventStore.authorizationStatus` directly on startup to avoid redundant permission dialogs
 - Detects **write-only** access (macOS 14+ split calendar permission into two tiers) and surfaces a specific message in the popover
-- Filters out all-day events and events the user has declined
+- Filters out all-day events, events the user has declined, and events the user has manually dismissed
+- **Dismissal** — `dismiss(_:)` records a per-occurrence key (event id + start date) mapped to the event's end date, persisted to `UserDefaults`. `refresh()` filters these out and recomputes urgency from what remains, so dismissing the only in-progress event clears the alert. Entries self-prune once their end date passes (EventKit's predicate matches any event *overlapping* the look-ahead window, which is why an in-progress event lingers without this).
 - `@Published upcomingEvents: [EKEvent]` — AppDelegate subscribes via Combine to drive icon state
 
 ### AppDelegate
