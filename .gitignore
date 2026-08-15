@@ -24,3 +24,6 @@ DerivedData/
 # Temp
 *.swp
 *.swo
+
+# Local Claude Code settings (not shared)
+.claude/
