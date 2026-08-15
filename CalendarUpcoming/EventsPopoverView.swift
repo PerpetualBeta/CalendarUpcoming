@@ -47,17 +47,13 @@ struct EventsPopoverView: View {
         .frame(maxHeight: 400)
     }
 
+    /// Nothing coming up, so the space goes to the month instead of to a notice
+    /// saying there is nothing to show.
     private var emptyView: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "calendar.badge.checkmark")
-                .font(.system(size: 32))
-                .foregroundColor(.secondary)
-            Text("No upcoming events")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(24)
+        MonthCalendarView()
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
     }
 
     private var writeOnlyView: some View {
@@ -105,6 +101,141 @@ struct EventsPopoverView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(20)
+    }
+}
+
+// MARK: - Month Calendar
+
+/// The current month at a glance, with today marked — shown in place of the event
+/// list when there is nothing upcoming.
+///
+/// Every part of the layout is read from `Calendar.current`: the week starts on
+/// whichever day the user's locale starts on, and the weekday initials are theirs.
+/// Nothing here assumes a Monday, or English.
+struct MonthCalendarView: View {
+
+    /// The day the grid is built around. A parameter rather than a `Date()` inside
+    /// the body so the view can be rendered for any month without waiting for one.
+    var referenceDate: Date = Date()
+
+    private enum Metrics {
+        /// Side of a day cell. Square, so the mark drawn behind today is a circle
+        /// rather than an ellipse, and wide enough for two digits at `dayFont`.
+        static let dayCell: CGFloat = 26
+        static let dayFont: CGFloat = 12
+        static let rowSpacing: CGFloat = 3
+        static let titleSpacing: CGFloat = 10
+    }
+
+    private var calendar: Calendar { Calendar.current }
+
+    private var monthTitle: String {
+        let formatter = DateFormatter()
+        formatter.locale = calendar.locale ?? .current
+        // Template rather than a literal pattern: the locale decides whether the
+        // year leads or trails, and how the month is spelled.
+        formatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
+        return formatter.string(from: referenceDate)
+    }
+
+    /// Weekday initials rotated so the first is the locale's first day of the week.
+    /// `veryShortWeekdaySymbols` is always Sunday-first whatever the locale, so the
+    /// rotation is what makes a Monday-start week come out right.
+    private var weekdayInitials: [String] {
+        let symbols = calendar.veryShortWeekdaySymbols
+        let offset = calendar.firstWeekday - 1
+        guard symbols.indices.contains(offset) else { return symbols }
+        return Array(symbols[offset...] + symbols[..<offset])
+    }
+
+    private var firstOfMonth: Date? {
+        calendar.date(from: calendar.dateComponents([.year, .month], from: referenceDate))
+    }
+
+    /// Blank cells before the 1st, so it falls under the right weekday.
+    private var leadingBlanks: Int {
+        guard let firstOfMonth else { return 0 }
+        let weekday = calendar.component(.weekday, from: firstOfMonth)
+        return (weekday - calendar.firstWeekday + weekdayInitials.count) % weekdayInitials.count
+    }
+
+    /// The month's days. Taken from the calendar's own range so February, leap
+    /// years and every other irregularity are its problem rather than ours.
+    private var days: [Int] {
+        guard let range = calendar.range(of: .day, in: .month, for: referenceDate) else { return [] }
+        return Array(range)
+    }
+
+    private var columns: [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: 0), count: weekdayInitials.count)
+    }
+
+    /// One cell of the grid.
+    ///
+    /// The grid is filled from a single sequence of these rather than from three
+    /// `ForEach`es in a row, because three would each have counted from zero: the
+    /// weekday initials 0...6, the leading blanks 0...4 and the days 1...31 all
+    /// identified by plain integers in one container. SwiftUI resolves that by
+    /// keeping the first view for a given identity and dropping the rest, so the
+    /// 1st to the 6th of the month silently vanished behind the weekday headings
+    /// while the 7th onward — whose numbers collided with nothing — drew fine.
+    private enum Cell: Identifiable {
+        case weekday(index: Int, symbol: String)
+        case blank(index: Int)
+        case day(Int)
+
+        var id: String {
+            switch self {
+            case .weekday(let index, _): return "weekday-\(index)"
+            case .blank(let index):      return "blank-\(index)"
+            case .day(let day):          return "day-\(day)"
+            }
+        }
+    }
+
+    private var cells: [Cell] {
+        weekdayInitials.enumerated().map { Cell.weekday(index: $0.offset, symbol: $0.element) }
+            + (0..<leadingBlanks).map { Cell.blank(index: $0) }
+            + days.map { Cell.day($0) }
+    }
+
+    var body: some View {
+        VStack(spacing: Metrics.titleSpacing) {
+            Text(monthTitle)
+                .font(.subheadline.weight(.semibold))
+
+            LazyVGrid(columns: columns, spacing: Metrics.rowSpacing) {
+                ForEach(cells) { cell in
+                    switch cell {
+                    case .weekday(_, let symbol):
+                        Text(symbol)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity)
+                    case .blank:
+                        Color.clear.frame(height: Metrics.dayCell)
+                    case .day(let day):
+                        dayCell(day)
+                    }
+                }
+            }
+        }
+    }
+
+    private func dayCell(_ day: Int) -> some View {
+        let isToday = date(for: day).map(calendar.isDateInToday) ?? false
+        return Text("\(day)")
+            .font(.system(size: Metrics.dayFont))
+            .monospacedDigit()
+            .foregroundStyle(isToday ? Color.white : Color.primary)
+            .frame(width: Metrics.dayCell, height: Metrics.dayCell)
+            .background { if isToday { Circle().fill(Color.accentColor) } }
+            .frame(maxWidth: .infinity)
+    }
+
+    private func date(for day: Int) -> Date? {
+        guard let firstOfMonth else { return nil }
+        return calendar.date(byAdding: .day, value: day - 1, to: firstOfMonth)
     }
 }
 
