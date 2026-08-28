@@ -19,6 +19,7 @@
 		CB000060 /* JorvikAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000070 /* JorvikAboutView.swift */; };
 		CB000061 /* JorvikSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000071 /* JorvikSettingsView.swift */; };
 		CB000063 /* JorvikMenuBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000073 /* JorvikMenuBuilder.swift */; };
+		AA000001 /* JorvikApplicationMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002 /* JorvikApplicationMenu.swift */; };
 		CB000064 /* JorvikMenuBarPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000074 /* JorvikMenuBarPill.swift */; };
 		CB000065 /* JorvikWindowHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000075 /* JorvikWindowHelper.swift */; };
 		CB000066 /* JorvikShortcutRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000076 /* JorvikShortcutRecorder.swift */; };
@@ -42,6 +43,7 @@
 		CB000070 /* JorvikAboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikAboutView.swift; sourceTree = "<group>"; };
 		CB000071 /* JorvikSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikSettingsView.swift; sourceTree = "<group>"; };
 		CB000073 /* JorvikMenuBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikMenuBuilder.swift; sourceTree = "<group>"; };
+		AA000002 /* JorvikApplicationMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikApplicationMenu.swift; sourceTree = "<group>"; };
 		CB000074 /* JorvikMenuBarPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikMenuBarPill.swift; sourceTree = "<group>"; };
 		CB000075 /* JorvikWindowHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikWindowHelper.swift; sourceTree = "<group>"; };
 		CB000076 /* JorvikShortcutRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikShortcutRecorder.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				CB000070 /* JorvikAboutView.swift */,
 				CB000071 /* JorvikSettingsView.swift */,
 				CB000073 /* JorvikMenuBuilder.swift */,
+				AA000002 /* JorvikApplicationMenu.swift */,
 				CB000074 /* JorvikMenuBarPill.swift */,
 				CB000075 /* JorvikWindowHelper.swift */,
 				CB000076 /* JorvikShortcutRecorder.swift */,
@@ -212,6 +215,7 @@
 				CB000060 /* JorvikAboutView.swift in Sources */,
 				CB000061 /* JorvikSettingsView.swift in Sources */,
 				CB000063 /* JorvikMenuBuilder.swift in Sources */,
+				AA000001 /* JorvikApplicationMenu.swift in Sources */,
 				CB000064 /* JorvikMenuBarPill.swift in Sources */,
 				CB000065 /* JorvikWindowHelper.swift in Sources */,
 				CB000066 /* JorvikShortcutRecorder.swift in Sources */,
