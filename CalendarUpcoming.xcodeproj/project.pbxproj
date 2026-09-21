@@ -23,6 +23,7 @@
 		CB000064 /* JorvikMenuBarPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000074 /* JorvikMenuBarPill.swift */; };
 		CB000065 /* JorvikWindowHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000075 /* JorvikWindowHelper.swift */; };
 		CB000066 /* JorvikShortcutRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000076 /* JorvikShortcutRecorder.swift */; };
+		CB0000B01 /* JorvikLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0000F01 /* JorvikLocalization.swift */; };
 		CB000601 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB000600; };
 		CB000602 /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CB000600; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -47,6 +48,7 @@
 		CB000074 /* JorvikMenuBarPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikMenuBarPill.swift; sourceTree = "<group>"; };
 		CB000075 /* JorvikWindowHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikWindowHelper.swift; sourceTree = "<group>"; };
 		CB000076 /* JorvikShortcutRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikShortcutRecorder.swift; sourceTree = "<group>"; };
+		CB0000F01 /* JorvikLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikLocalization.swift; sourceTree = "<group>"; };
 		CB000600 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,6 +116,7 @@
 				CB000074 /* JorvikMenuBarPill.swift */,
 				CB000075 /* JorvikWindowHelper.swift */,
 				CB000076 /* JorvikShortcutRecorder.swift */,
+				CB0000F01 /* JorvikLocalization.swift */,
 			);
 			path = JorvikKit;
 			sourceTree = "<group>";
@@ -219,6 +222,7 @@
 				CB000064 /* JorvikMenuBarPill.swift in Sources */,
 				CB000065 /* JorvikWindowHelper.swift in Sources */,
 				CB000066 /* JorvikShortcutRecorder.swift in Sources */,
+				CB0000B01 /* JorvikLocalization.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
