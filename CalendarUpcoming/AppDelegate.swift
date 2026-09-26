@@ -227,6 +227,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hc.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
         p.contentViewController = hc
 
+        // Size the popover before showing it, or it lands in the wrong place.
+        // AppKit positions a popover from its content size, and an
+        // NSHostingController has not produced one yet at `show` time: SwiftUI
+        // lays out afterwards, so the window gets the right size in a position
+        // worked out from the wrong one. Same fix as ActiveSpace 12540fe, where
+        // the popover was measured landing 264 pt below its anchor.
+        hc.view.layoutSubtreeIfNeeded()
+        p.contentSize = hc.view.fittingSize
+
         // Best-effort activation. On macOS 14+ use the cooperative form;
         // on older macOS fall back to the legacy (then-non-deprecated) API.
         if #available(macOS 14.0, *) {
