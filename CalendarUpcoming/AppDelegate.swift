@@ -223,8 +223,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             rootView: EventsPopoverView(monitor: monitor, onDismiss: { [weak self] in self?.closePopover() })
         )
         hc.onCancel = { [weak self] in self?.closePopover() }
-        hc.view.wantsLayer = true
-        hc.view.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        // No background of our own: the popover draws the system material, so it
+        // matches every other popover in light and dark mode.
         p.contentViewController = hc
 
         // Size the popover before showing it, or it lands in the wrong place.

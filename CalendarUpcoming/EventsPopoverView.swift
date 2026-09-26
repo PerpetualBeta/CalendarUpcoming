@@ -32,7 +32,6 @@ struct EventsPopoverView: View {
             }
         }
         .frame(width: 320)
-        .background(Color(.windowBackgroundColor))
     }
 
     private var eventList: some View {
