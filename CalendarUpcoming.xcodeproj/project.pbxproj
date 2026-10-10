@@ -14,7 +14,6 @@
 		CB000054 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000034 /* SettingsView.swift */; };
 		CB000055 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB000036 /* Assets.xcassets */; };
 		CB000056 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB000038 /* EventKit.framework */; };
-		CB000057 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000039 /* ContentView.swift */; };
 		CB000058 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000040 /* AboutView.swift */; };
 		CB000060 /* JorvikAboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000070 /* JorvikAboutView.swift */; };
 		CB000061 /* JorvikSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000071 /* JorvikSettingsView.swift */; };
@@ -22,7 +21,6 @@
 		AA000001 /* JorvikApplicationMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000002 /* JorvikApplicationMenu.swift */; };
 		CB000064 /* JorvikMenuBarPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000074 /* JorvikMenuBarPill.swift */; };
 		CB000065 /* JorvikWindowHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000075 /* JorvikWindowHelper.swift */; };
-		CB000066 /* JorvikShortcutRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB000076 /* JorvikShortcutRecorder.swift */; };
 		CB0000B01 /* JorvikLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0000F01 /* JorvikLocalization.swift */; };
 		CB000601 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB000600; };
 		CB000602 /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CB000600; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -38,7 +36,6 @@
 		CB000036 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CB000037 /* CalendarUpcoming.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalendarUpcoming.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB000038 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
-		CB000039 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CB000040 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		CB000041 /* CalendarUpcoming.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CalendarUpcoming.entitlements; sourceTree = "<group>"; };
 		CB000070 /* JorvikAboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikAboutView.swift; sourceTree = "<group>"; };
@@ -47,7 +44,6 @@
 		AA000002 /* JorvikApplicationMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikApplicationMenu.swift; sourceTree = "<group>"; };
 		CB000074 /* JorvikMenuBarPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikMenuBarPill.swift; sourceTree = "<group>"; };
 		CB000075 /* JorvikWindowHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikWindowHelper.swift; sourceTree = "<group>"; };
-		CB000076 /* JorvikShortcutRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikShortcutRecorder.swift; sourceTree = "<group>"; };
 		CB0000F01 /* JorvikLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JorvikLocalization.swift; sourceTree = "<group>"; };
 		CB000600 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,7 +92,6 @@
 				CB000032 /* EventMonitor.swift */,
 				CB000033 /* EventsPopoverView.swift */,
 				CB000034 /* SettingsView.swift */,
-				CB000039 /* ContentView.swift */,
 				CB000040 /* AboutView.swift */,
 				CB000041 /* CalendarUpcoming.entitlements */,
 				CB000035 /* Info.plist */,
@@ -115,7 +110,6 @@
 				AA000002 /* JorvikApplicationMenu.swift */,
 				CB000074 /* JorvikMenuBarPill.swift */,
 				CB000075 /* JorvikWindowHelper.swift */,
-				CB000076 /* JorvikShortcutRecorder.swift */,
 				CB0000F01 /* JorvikLocalization.swift */,
 			);
 			path = JorvikKit;
@@ -213,7 +207,6 @@
 				CB000052 /* EventMonitor.swift in Sources */,
 				CB000053 /* EventsPopoverView.swift in Sources */,
 				CB000054 /* SettingsView.swift in Sources */,
-				CB000057 /* ContentView.swift in Sources */,
 				CB000058 /* AboutView.swift in Sources */,
 				CB000060 /* JorvikAboutView.swift in Sources */,
 				CB000061 /* JorvikSettingsView.swift in Sources */,
@@ -221,7 +214,6 @@
 				AA000001 /* JorvikApplicationMenu.swift in Sources */,
 				CB000064 /* JorvikMenuBarPill.swift in Sources */,
 				CB000065 /* JorvikWindowHelper.swift in Sources */,
-				CB000066 /* JorvikShortcutRecorder.swift in Sources */,
 				CB0000B01 /* JorvikLocalization.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
